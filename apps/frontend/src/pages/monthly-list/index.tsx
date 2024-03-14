@@ -5,5 +5,5 @@ interface MonthlyListPageProps { }
 
 export const MonthlyListPage: FC<MonthlyListPageProps> = () => {
 
-  return <S.MonthlyList className='container'>MonthlyListPage</S.MonthlyList>;
+  return <div className='container text-3xl font-bold underline'>MonthlyListPage</div>;
 };

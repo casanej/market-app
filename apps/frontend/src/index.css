@@ -1,5 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -127,5 +131,5 @@ button:focus-visible {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5em;
+  padding: 1.5em;
 }
