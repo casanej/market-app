@@ -1,46 +1,42 @@
-import Quagga from '@ericblade/quagga2';
-import { FC, useCallback, useRef } from 'react';
-// import * as S from './index.style';
+import { QuaggaJSResultObject } from '@ericblade/quagga2';
+import { FC, useEffect, useState } from 'react';
+import * as S from './index.style';
+import { BarcodeReaderDevices } from './components/devices-options';
+import { quaggaService } from './service/index.sevice';
 
 interface BarcodeReaderProps {
   onRead: (barCode: string) => void
 }
 
 export const BarcodeReader: FC<BarcodeReaderProps> = ({ onRead }) => {
-  const targetRef = useRef<HTMLDivElement>(null);
+  const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | undefined>(undefined);
 
-  const initReader = useCallback(() => {
-    Quagga.init({
-      inputStream: {
-        name: 'Live',
-        type: 'LiveStream',
-        target: document.querySelector('#reader')!
-      },
-      decoder: {
-        readers: ['ean_reader']
-      }
-    }, (err: unknown) => {
-      if (err) {
-        console.log('ERRO', err)
-        return
-      }
+  const handleRead = (result: QuaggaJSResultObject) => {
+    if (result.codeResult.startInfo.error === 0) {
+      onRead(result.codeResult.code || '');
+      quaggaService.stop();
+    }
+  }
 
-      targetRef.current!.style.display = 'block';
+  const handleStart = () => {
+    quaggaService.initialize().onDetected(handleRead);
+  }
 
-      Quagga.start();
-      Quagga.onDetected((data) => {
-        if (data.codeResult.startInfo.error === 0) {
-          onRead(data.codeResult.code ?? 'No identified')
-          Quagga.stop();
-          targetRef.current!.style.display = 'none';
-        }
-
-      })
-    })
-  }, [onRead])
+  useEffect(() => {
+    if (selectedDevice) {
+      quaggaService.changeDevice(selectedDevice.deviceId);
+    }
+  }, [selectedDevice]);
 
   return <div>
-    <button onClick={initReader}>Iniciar Leitura</button>
-    <div ref={targetRef} id='reader' style={{ display: 'none' }} />
+    <div>
+      <button onClick={handleStart}>Iniciar Leitura</button>
+    </div>
+    <div>
+      <div>
+        <BarcodeReaderDevices onSelect={setSelectedDevice} />
+      </div>
+      <S.BarcodeVideoOverlay id='barcode-reader' />
+    </div>
   </div>
 };

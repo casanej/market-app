@@ -1,0 +1,1 @@
+export { BarcodeReaderDevices } from './devices-options';
