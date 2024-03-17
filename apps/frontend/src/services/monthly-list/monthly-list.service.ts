@@ -1,16 +1,17 @@
 import { makeAutoObservable } from "mobx"
+import { MonthlyItem } from "./models/item";
 
 export class MonthlyListService {
   total: number = 0;
-  items: { name: string, value: number }[] = [];
+  items: MonthlyItem[] = [];
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  public addItem(name: string, value: number) {
-    this.total += value;
-    this.items.push({ name, value });
+  public addItem(code: string, name: string, value: number, quantity: number = 1) {
+    this.total += value * quantity;
+    this.items.push({ code, name, value, quantity });
   }
 }
 

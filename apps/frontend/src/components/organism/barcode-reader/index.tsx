@@ -1,8 +1,8 @@
-import { QuaggaJSResultObject } from '@ericblade/quagga2';
 import { FC, useEffect, useState } from 'react';
-import * as S from './index.style';
+import { QuaggaJSResultObject } from '@ericblade/quagga2';
 import { BarcodeReaderDevices } from './components/devices-options';
 import { quaggaService } from './service/index.sevice';
+import * as S from './index.style';
 
 interface BarcodeReaderProps {
   onRead: (barCode: string) => void
