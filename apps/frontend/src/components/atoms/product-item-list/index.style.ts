@@ -29,3 +29,11 @@ export const ProductItemList = styled.div`
     }
   }
 `;
+
+export const ProductItemListPriceMessage = styled.div<{ ischeap: boolean }>`
+  span {
+    label {
+        color: ${props => props.ischeap ? '#198754' : '#dc3545'};
+      }
+  }
+`;

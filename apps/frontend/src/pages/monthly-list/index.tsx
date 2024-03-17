@@ -58,11 +58,9 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
       </div>
       <button onClick={handleAddItem}>Adicionar</button>
     </div>
-    <div>
-      <ul>
-        {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} value={item.value} />))}
-      </ul>
-    </div>
+    <S.MonthlyListRows>
+      {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} value={item.value} lastPrice={5.59} />))}
+    </S.MonthlyListRows>
   </S.MonthlyList>;
 });
 

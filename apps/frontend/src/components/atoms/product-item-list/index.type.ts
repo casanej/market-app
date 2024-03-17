@@ -1,3 +1,5 @@
 import { MonthlyItem } from "../../../services/monthly-list/models/item";
 
-export interface ProductItemListProps extends MonthlyItem { }
+export interface ProductItemListProps extends MonthlyItem {
+  lastPrice?: number;
+}
