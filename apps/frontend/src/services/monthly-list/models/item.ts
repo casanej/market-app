@@ -3,4 +3,5 @@ export interface MonthlyItem {
   name: string;
   value: number;
   quantity: number;
+  lastPrice?: number;
 }

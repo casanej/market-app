@@ -8,7 +8,6 @@ class OpenFoodFactsApiService {
   });
 
   async makeRequest<ResponseData = any, RequestPayload = any>(method: Method, url: string, payload?: RequestPayload): Promise<ResponseData> {
-    console.log('[MAKING REQUEST]')
     const request = await this.instance.request<ResponseData>({
       method,
       url,

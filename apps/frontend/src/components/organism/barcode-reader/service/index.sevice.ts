@@ -39,7 +39,7 @@ export const quaggaService = {
 
     return localStorage.getItem(KEY_LAST_USED_DEVICE) || '';
   },
-  initialize: function (deviceId?: string) {
+  initialize: function (deviceId?: string, callback?: () => void) {
 
     const activeDeviceId = deviceId || this.getLastUsedDevice();
 
@@ -58,7 +58,10 @@ export const quaggaService = {
       decoder: {
         readers: ["ean_reader"]
       }
-    }).then(() => { this.start(null) }).catch(console.error);
+    }).then(() => {
+      this.start(null)
+      if (callback) callback();
+    }).catch(console.error);
 
     return this;
   },

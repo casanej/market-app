@@ -7,7 +7,7 @@ import { monthlyListService } from '../../services/monthly-list/monthly-list.ser
 import { moneyFormat } from '../../utils';
 import { BarcodeReader } from '../../components/organism';
 import { openFoodFactsApiService } from '../../services';
-import { ProductItemList } from '../../components/atoms';
+import { Button, ProductItemList, Textfield } from '../../components/atoms';
 
 
 const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
@@ -38,29 +38,55 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
   const handleAddItem = () => {
     service.addItem(barcode, productName, amount, quantity);
     setBarcode('');
+    setProductName('');
+    setQuantity(1);
     setAmount(0);
   };
 
-  return <S.MonthlyList className='container'>
-    <h1>Total: {moneyFormat(service.total)}</h1>
-    <div>
-      <div>
-        <input type="text" placeholder='Código de barras' inputMode='numeric' value={barcode} onChange={(e) => setBarcode(e.target.value)} />
+  return <S.MonthlyList className='container flex flex-col gap-8'>
+    <S.MonthlyListAdd>
+      <S.MonthlyListAddReader>
+        <Textfield
+          inputMode='numeric'
+          label='Código de barras'
+          type='text'
+          value={barcode}
+          onChange={(e) => setBarcode(e.target.value)}
+        />
+        <div>ou</div>
         <BarcodeReader
           onRead={(code) => setBarcode(code)}
         />
+      </S.MonthlyListAddReader>
+      <div className='flex flex-row gap-6 flex-1' >
+        <Textfield
+          label='Nome do produto'
+          value={productName}
+          onChange={(e) => setProductName(e.target.value)}
+        />
+        <Textfield
+          inputMode='decimal'
+          label='Valor'
+          type='number'
+          value={amount}
+          onChange={(e) => setAmount(+e.target.value)}
+          min={0}
+        />
+        <Textfield
+          inputMode='decimal'
+          label='Quantidade'
+          type='number'
+          value={quantity}
+          onChange={(e) => setQuantity(+e.target.value)}
+          min={1}
+        />
       </div>
-      <div>
-        <input type='number' placeholder='Valor' inputMode='decimal' onChange={(e) => setAmount(+e.target.value)} value={amount} />
-      </div>
-      <div>
-        <input type='number' placeholder='Quantidade' inputMode='decimal' onChange={(e) => setQuantity(+e.target.value)} value={quantity} min={1} />
-      </div>
-      <button onClick={handleAddItem}>Adicionar</button>
+      <Button fullWidth onClick={handleAddItem}>Adicionar</Button>
+    </S.MonthlyListAdd>
+    <h1>Total: {moneyFormat(service.total)}</h1>
+    <div className='flex flex-col gap-4'>
+      {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} value={item.value} lastPrice={item.lastPrice} />))}
     </div>
-    <S.MonthlyListRows>
-      {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} value={item.value} lastPrice={5.59} />))}
-    </S.MonthlyListRows>
   </S.MonthlyList>;
 });
 

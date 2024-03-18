@@ -1,25 +1,35 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { QuaggaJSResultObject } from '@ericblade/quagga2';
 import { BarcodeReaderDevices } from './components/devices-options';
 import { quaggaService } from './service/index.sevice';
 import * as S from './index.style';
+import { Button } from '../../atoms';
 
 interface BarcodeReaderProps {
   onRead: (barCode: string) => void
 }
 
 export const BarcodeReader: FC<BarcodeReaderProps> = ({ onRead }) => {
+  const [isReading, setIsReading] = useState<boolean>(false);
   const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | undefined>(undefined);
 
   const handleRead = (result: QuaggaJSResultObject) => {
     if (result.codeResult.startInfo.error === 0) {
       onRead(result.codeResult.code || '');
       quaggaService.stop();
+      setIsReading(false);
     }
   }
 
-  const handleStart = () => {
-    quaggaService.initialize().onDetected(handleRead);
+  const handleToggleReader = () => {
+    if (isReading) {
+      quaggaService.stop();
+      setIsReading(false);
+    } else {
+      quaggaService.initialize(undefined,
+        () => { setIsReading(true) }
+      ).onDetected(handleRead);
+    }
   }
 
   useEffect(() => {
@@ -28,15 +38,21 @@ export const BarcodeReader: FC<BarcodeReaderProps> = ({ onRead }) => {
     }
   }, [selectedDevice]);
 
+  const renderButtonLabel = useMemo(() => {
+    return isReading ? 'Parar leitura' : 'Ler código de barras';
+  }, [isReading]);
+
   return <div>
     <div>
-      <button onClick={handleStart}>Iniciar Leitura</button>
-    </div>
-    <div>
-      <div>
-        <BarcodeReaderDevices onSelect={setSelectedDevice} />
-      </div>
       <S.BarcodeVideoOverlay id='barcode-reader' />
+      {
+        isReading && <div>
+          <BarcodeReaderDevices onSelect={setSelectedDevice} />
+        </div>
+      }
+      <div>
+        <Button onClick={handleToggleReader}>{renderButtonLabel}</Button>
+      </div>
     </div>
   </div>
 };

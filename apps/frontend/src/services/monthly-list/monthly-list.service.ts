@@ -4,6 +4,7 @@ import { MonthlyItem } from "./models/item";
 export class MonthlyListService {
   total: number = 0;
   items: MonthlyItem[] = [];
+  // item: MonthlyItem;
 
   constructor() {
     makeAutoObservable(this);
@@ -16,5 +17,4 @@ export class MonthlyListService {
 }
 
 export type IMonthlyListService = MonthlyListService;
-//export const monthlyListService = new MonthlyListService();
 export const monthlyListService = new MonthlyListService();
