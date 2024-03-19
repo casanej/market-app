@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MonthlyListPageProps } from './index.type';
 import * as S from './index.style';
 import { monthlyListService } from '../../services/monthly-list/monthly-list.service';
@@ -11,73 +11,68 @@ import { Button, ProductItemList, Textfield } from '../../components/atoms';
 
 
 const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
-  const [barcode, setBarcode] = useState<string>('');
-  const [productName, setProductName] = useState<string>('');
-  const [amount, setAmount] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(1);
-
-
   const { mutate: mutationProductCodeBar } = useMutation({
     mutationFn: (barcode: string) => openFoodFactsApiService.getProduct(barcode),
     onSuccess: (data) => {
-      setProductName(`${data.product.brands} - ${data.product.product_name}`);
+      service.sketchItemEdit('name', `${data.product.brands} - ${data.product.product_name}`);
     },
     onError: () => {
-      setProductName('Produto não encontrado');
+      service.sketchItemEdit('name', 'Produto não encontrado');
     },
 
   });
 
   useEffect(() => {
-    if (barcode && barcode.length === 13) {
-      mutationProductCodeBar(barcode);
+    if (service.item.code.value && service.item.code.value.length === 13) {
+      mutationProductCodeBar(service.item.code.value);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barcode]);
+  }, [service.item.code.value]);
 
   const handleAddItem = () => {
-    service.addItem(barcode, productName, amount, quantity);
-    setBarcode('');
-    setProductName('');
-    setQuantity(1);
-    setAmount(0);
+    service.sketchItemAdd();
   };
 
   return <S.MonthlyList className='container flex flex-col gap-8'>
     <S.MonthlyListAdd>
       <S.MonthlyListAddReader>
         <Textfield
+          errorMessage={service.item.code.error}
           inputMode='numeric'
           label='Código de barras'
           type='text'
-          value={barcode}
-          onChange={(e) => setBarcode(e.target.value)}
+          value={service.item.code.value}
+          onChange={(e) => service.sketchItemEdit('code', e.target.value)}
         />
         <div>ou</div>
         <BarcodeReader
-          onRead={(code) => setBarcode(code)}
+          onRead={(code) => service.sketchItemEdit('code', code)}
         />
       </S.MonthlyListAddReader>
       <div className='flex flex-row gap-6 flex-1' >
         <Textfield
+          errorMessage={service.item.name.error}
           label='Nome do produto'
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
+          value={service.item.name.value}
+          onChange={(e) => service.sketchItemEdit('name', e.target.value)}
         />
         <Textfield
+          errorMessage={service.item.price.error}
           inputMode='decimal'
-          label='Valor'
+          label='Preço'
           type='number'
-          value={amount}
-          onChange={(e) => setAmount(+e.target.value)}
+          value={service.item.price.value}
+          onBlur={() => service.sketchValidateField('price')}
+          onChange={(e) => service.sketchItemEdit('price', +e.target.value)}
           min={0}
         />
         <Textfield
+          errorMessage={service.item.quantity.error}
           inputMode='decimal'
           label='Quantidade'
           type='number'
-          value={quantity}
-          onChange={(e) => setQuantity(+e.target.value)}
+          value={service.item.quantity.value}
+          onChange={(e) => service.sketchItemEdit('quantity', +e.target.value)}
           min={1}
         />
       </div>
@@ -85,7 +80,7 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
     </S.MonthlyListAdd>
     <h1>Total: {moneyFormat(service.total)}</h1>
     <div className='flex flex-col gap-4'>
-      {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} value={item.value} lastPrice={item.lastPrice} />))}
+      {service.items.map(item => (<ProductItemList key={item.code} code={item.code} name={item.name} quantity={item.quantity} price={item.price} lastPrice={item.lastPrice} />))}
     </div>
   </S.MonthlyList>;
 });

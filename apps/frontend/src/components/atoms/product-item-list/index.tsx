@@ -4,7 +4,7 @@ import { ProductItemListProps } from './index.type';
 import { moneyFormat, percentageFormat } from '../../../utils';
 
 
-export const ProductItemList: FC<ProductItemListProps> = ({ code, lastPrice, name, quantity, value }) => {
+export const ProductItemList: FC<ProductItemListProps> = ({ code, lastPrice, name, quantity, price: value }) => {
 
   const renderLastPrice = useMemo(() => {
     if (!lastPrice) return <label>Sem informações de histórico de preço.</label>;

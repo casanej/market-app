@@ -2,4 +2,5 @@ type HTMLInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'classNa
 
 export interface TextfieldProps extends HTMLInputProps {
   label?: string;
+  errorMessage?: string;
 }
