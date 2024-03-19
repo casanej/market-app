@@ -30,7 +30,7 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
   }, [service.item.code.value]);
 
   const handleAddItem = () => {
-    service.sketchItemAdd();
+
   };
 
   return <S.MonthlyList className='container flex flex-col gap-8'>
@@ -76,7 +76,10 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
           min={1}
         />
       </div>
-      <Button fullWidth onClick={handleAddItem}>Adicionar</Button>
+      <div className='flex flex-row gap-2'>
+        <Button fullWidth onClick={() => service.sketchItemAdd()}>Adicionar</Button>
+        <Button onClick={() => service.sketchItemReset()}>Limpar</Button>
+      </div>
     </S.MonthlyListAdd>
     <h1>Total: {moneyFormat(service.total)}</h1>
     <div className='flex flex-col gap-4'>
