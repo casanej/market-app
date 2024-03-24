@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { HomePage } from "./home";
-import { MonthlyListPage } from "./monthly-list";
+import { MonthlyListIdPage } from "./monthly-list/id";
 
 const routes = createBrowserRouter([
   {
@@ -8,8 +8,8 @@ const routes = createBrowserRouter([
     element: <HomePage />,
   },
   {
-    path: "/monthly-list",
-    element: <MonthlyListPage />,
+    path: "/monthly-list/:listId",
+    element: <MonthlyListIdPage />,
   },
 ]);
 

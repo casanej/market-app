@@ -1,13 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MonthlyListPageProps } from './index.type';
 import * as S from './index.style';
-import { monthlyListService } from '../../services/monthly-list/monthly-list.service';
-import { moneyFormat } from '../../utils';
-import { BarcodeReader } from '../../components/organism';
-import { openFoodFactsApiService } from '../../services';
-import { Button, ProductItemList, Textfield } from '../../components/atoms';
+import { monthlyListService } from '../../../services/monthly-list/monthly-list.service';
+import { moneyFormat } from '../../../utils';
+import { BarcodeReader } from '../../../components/organism';
+import { openFoodFactsApiService } from '../../../services';
+import { Button, ProductItemList, Textfield } from '../../../components/atoms';
 
 
 const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
@@ -97,7 +98,17 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
   </S.MonthlyList>;
 });
 
-export const MonthlyListPage = () => {
+export const MonthlyListIdPage = () => {
+  const navigate = useNavigate();
 
-  return <MonthlyListPageWrapped service={monthlyListService} />;
+  const { listId } = useParams<{ listId: string }>();
+
+  const service = useMemo(() => monthlyListService, []);
+
+  useEffect(() => {
+    if (listId) service.updateListId(listId);
+    else navigate('/monthly-list');
+  }, [listId])
+
+  return <MonthlyListPageWrapped service={service} />;
 };
