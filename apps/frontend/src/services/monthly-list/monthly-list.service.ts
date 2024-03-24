@@ -4,22 +4,27 @@ import { MonthlyItem, MonthlySketchedItem } from "./models/item";
 import { DEFAULT_ITEM } from "./constants/item";
 
 export class MonthlyListService {
+  private LIST_NAME = 'monthly-list';
   total: number = 0;
   items: MonthlyItem[] = [];
   item: MonthlySketchedItem = Object.assign({}, DEFAULT_ITEM);
 
-  constructor() {
+  constructor(listName?: string) {
     makeAutoObservable(this, {
       item: observable.deep,
     }, {
       autoBind: true,
     });
+
+    if (listName) this.LIST_NAME = listName.toUpperCase();
+    this.loadList();
+
   }
 
   /* SKETCH ITEM EDIT */
   public sketchItemAdd() {
     try {
-      z.object({
+      /* z.object({
         code: z.string().min(1),
         name: z.string().min(3),
         price: z.number().min(0),
@@ -29,7 +34,7 @@ export class MonthlyListService {
         name: this.item.name.value,
         price: this.item.price.value,
         quantity: this.item.quantity.value,
-      });
+      }); */
 
       this.items.push({
         code: this.item.code.value,
@@ -38,7 +43,9 @@ export class MonthlyListService {
         quantity: this.item.quantity.value,
         lastPrice: this.item.lastPrice?.value,
       });
+      this.addTotal(this.item.price.value, this.item.quantity.value);
       this.sketchItemReset();
+      this.saveList();
     } catch (err) {
       const zodErrors = (err as ZodError).errors;
       for (const error of zodErrors) {
@@ -79,9 +86,31 @@ export class MonthlyListService {
     }
   }
 
+  addTotal(price: number, quantity: number) {
+    this.total += price * quantity;
+  }
+
   /* ------------- */
 
+  /* SAVE ITEMS ON LOCAL STORAGE */
+  public saveList() {
+    const listData = {
+      total: this.total,
+      items: this.items,
+    };
 
+    localStorage.setItem(`SAVED_LIST_${this.LIST_NAME}`, JSON.stringify(listData));
+  }
+
+  public loadList() {
+    const listData = localStorage.getItem(`SAVED_LIST_${this.LIST_NAME}`);
+    if (!listData) return;
+
+    const { total, items } = JSON.parse(listData);
+    this.total = total;
+    this.items = items;
+  }
+  /* ------------------------ */
 
   public editItem(key: keyof MonthlyItem, value: any) {
     if (key === 'name') this.item.name = value;
@@ -91,12 +120,20 @@ export class MonthlyListService {
     if (key === 'quantity') {
       this.item.quantity = value;
     }
+
+    this.saveList();
   }
 
-  public removeItem(index: number) {
-    const item = this.items[index];
+  public removeItem(code: string) {
+    const itemIndex = this.items.findIndex(item => item.code === code);
+
+    if (itemIndex === -1) return;
+
+    const item = this.items[itemIndex];
     this.total -= item.price * item.quantity;
-    this.items.splice(index, 1);
+    this.items.splice(itemIndex, 1);
+
+    this.saveList();
   }
 }
 

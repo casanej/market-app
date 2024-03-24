@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { TextfieldProps } from './index.type';
 
-export const Textfield: FC<TextfieldProps> = ({ errorMessage, label, ...rest }) => {
+export const Textfield: FC<TextfieldProps> = ({ errorMessage, helperText, label, ...rest }) => {
 
   return <div className="relative flex flex-col gap-2 w-full min-w-[200px]">
     <input
@@ -14,6 +14,9 @@ export const Textfield: FC<TextfieldProps> = ({ errorMessage, label, ...rest }) 
     </label>
     {
       errorMessage && <div className="text-[11px] text-red-500">{errorMessage}</div>
+    }
+    {
+      helperText && <div className="text-[11px] text-gray-400">{helperText}</div>
     }
   </div>;
 };
