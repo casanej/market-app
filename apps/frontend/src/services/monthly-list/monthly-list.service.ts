@@ -1,13 +1,14 @@
 import { makeAutoObservable, observable } from "mobx"
 import { ZodError, z } from 'zod';
 import { MonthlyItem, MonthlySketchedItem } from "./models/item";
-import { DEFAULT_ITEM } from "./constants/item";
+import { DEFAULT_SKETCH_ITEM } from "./constants/item";
 
 export class MonthlyListService {
   private LIST_NAME = 'monthly-list';
+  private LOCAL_STORAGE_KEY = `SAVED_LIST_${this.LIST_NAME}`;
   total: number = 0;
   items: MonthlyItem[] = [];
-  item: MonthlySketchedItem = Object.assign({}, DEFAULT_ITEM);
+  item: MonthlySketchedItem = Object.assign({}, DEFAULT_SKETCH_ITEM);
 
   constructor(listName?: string) {
     makeAutoObservable(this, {
@@ -16,16 +17,31 @@ export class MonthlyListService {
       autoBind: true,
     });
 
-    if (listName) this.LIST_NAME = listName.toUpperCase();
+    if (listName) {
+      const listNameKey = listName.toUpperCase()
+      this.LIST_NAME = listNameKey;
+    }
+    this.LOCAL_STORAGE_KEY = `SAVED_LIST_${this.LIST_NAME}`;
     this.loadList();
 
+  }
+
+  public updateListId(key: string) {
+    this.sketchItemReset();
+
+    this.LIST_NAME = key;
+    this.LOCAL_STORAGE_KEY = `SAVED_LIST_${this.LIST_NAME}`;
+
+    this.loadList();
+
+    return this;
   }
 
   /* SKETCH ITEM EDIT */
   public sketchItemAdd() {
     try {
-      /* z.object({
-        code: z.string().min(1),
+      z.object({
+        code: z.string().min(13),
         name: z.string().min(3),
         price: z.number().min(0),
         quantity: z.number().min(1),
@@ -34,7 +50,7 @@ export class MonthlyListService {
         name: this.item.name.value,
         price: this.item.price.value,
         quantity: this.item.quantity.value,
-      }); */
+      });
 
       this.items.push({
         code: this.item.code.value,
@@ -58,7 +74,7 @@ export class MonthlyListService {
   }
 
   public sketchItemReset() {
-    this.item = DEFAULT_ITEM;
+    this.item = DEFAULT_SKETCH_ITEM;
     return this;
   }
 
@@ -86,24 +102,24 @@ export class MonthlyListService {
     }
   }
 
-  addTotal(price: number, quantity: number) {
+  private addTotal(price: number, quantity: number) {
     this.total += price * quantity;
   }
 
   /* ------------- */
 
   /* SAVE ITEMS ON LOCAL STORAGE */
-  public saveList() {
+  private saveList() {
     const listData = {
       total: this.total,
       items: this.items,
     };
 
-    localStorage.setItem(`SAVED_LIST_${this.LIST_NAME}`, JSON.stringify(listData));
+    localStorage.setItem(this.LOCAL_STORAGE_KEY, JSON.stringify(listData));
   }
 
-  public loadList() {
-    const listData = localStorage.getItem(`SAVED_LIST_${this.LIST_NAME}`);
+  private loadList() {
+    const listData = localStorage.getItem(this.LOCAL_STORAGE_KEY);
     if (!listData) return;
 
     const { total, items } = JSON.parse(listData);

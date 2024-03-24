@@ -1,6 +1,6 @@
 import { MonthlySketchedItem } from "../models/item";
 
-export const DEFAULT_ITEM: MonthlySketchedItem = {
+export const DEFAULT_SKETCH_ITEM: MonthlySketchedItem = {
   code: { value: '' },
   name: { value: '' },
   price: { value: 0 },
