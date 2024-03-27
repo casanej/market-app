@@ -5,7 +5,7 @@ ENV NODE_ENV=$ENV
 
 RUN npm install -g @nestjs/cli
 RUN yarn install
-RUN yarn workspace backend build
+RUN yarn build
 
 EXPOSE 3000
 
