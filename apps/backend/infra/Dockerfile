@@ -7,7 +7,7 @@ RUN dir -s
 
 RUN npm install -g @nestjs/cli
 RUN yarn install
-RUN yarn build
+RUN yarn workspace backend build
 
 EXPOSE 3000
 
