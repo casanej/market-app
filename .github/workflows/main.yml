@@ -39,8 +39,8 @@ jobs:
       #  uses: actions/download-artifact@v3
       #  with:
       #    name: pck-node-modules
+      - uses: actions/checkout@v4
       - name: Build and push image
-        uses: actions/checkout@v4
         run: |
           docker login --username casanej --password ${{ secrets.GH_PERSONAL_TOKEN }} ghcr.io
           docker build -f apps/backend/infra --tag ghcr.io/casanej/market-app-backend:latest .
