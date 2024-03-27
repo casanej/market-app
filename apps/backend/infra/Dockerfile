@@ -1,9 +1,7 @@
-FROM node:20
+FROM node:20-alpine
 
-RUN mkdir apps/backend
-WORKDIR apps/backend
-
-COPY apps/backend .
+ARG ENV
+ENV NODE_ENV=$ENV
 
 RUN dir -s
 
@@ -13,4 +11,5 @@ RUN yarn build
 
 EXPOSE 3000
 
+RUN echo "env: $NODE_ENV"
 CMD npm run start:"$NODE_ENV"
