@@ -1,0 +1,47 @@
+name: Publish a docker image to Github Packages of the backend
+
+on:
+  push:
+    branches: ['main']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+
+# INSTALLING PACKAGES AND TESTING
+jobs:
+  install-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'yarn'
+      - name: Install dependencies
+        run: |
+          yarn --frozen-lockfile
+          yarn build
+      #- name: Archive packages
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: pck-node-modules
+      #    path: |
+      #      node_modules
+      #      apps/backend/node_modules
+
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      #- name: Download a node modules artifact
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: pck-node-modules
+      - name: Build and push image
+        uses: actions/checkout@v4
+        run: |
+          docker login --username casanej --password ${{ secrets.GH_PERSONAL_TOKEN }} ghcr.io
+          docker build -f apps/backend/infra --tag ghcr.io/casanej/market-app-backend:latest .
+          docker push ghcr.io/casanej/market-app-backend:latests
