@@ -14,4 +14,4 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD npm run start:"$NODE_ENV"
+CMD ["yarn", "start:prod"]
