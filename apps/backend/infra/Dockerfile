@@ -6,7 +6,7 @@ ENV NODE_ENV=$ENV
 RUN mkdir -p app/backend
 WORKDIR app/backend
 
-COPY ../ .
+COPY ./apps/backend .
 
 RUN npm install -g @nestjs/cli
 RUN yarn install
