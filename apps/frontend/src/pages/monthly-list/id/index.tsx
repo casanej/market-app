@@ -60,7 +60,6 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
         />
         <Textfield
           errorMessage={service.item.price.error}
-          inputMode='decimal'
           label='Preço'
           type='number'
           value={service.item.price.value}
@@ -70,7 +69,6 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
         />
         <Textfield
           errorMessage={service.item.quantity.error}
-          inputMode='decimal'
           label='Quantidade'
           type='number'
           value={service.item.quantity.value}
