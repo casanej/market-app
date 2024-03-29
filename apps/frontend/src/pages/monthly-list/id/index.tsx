@@ -81,6 +81,7 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
       <div className='flex flex-row gap-2'>
         <Button fullWidth onClick={() => service.sketchItemAdd()}>Adicionar</Button>
         <Button onClick={() => service.sketchItemReset()}>Limpar</Button>
+        <Button onClick={() => service.downloadAsJson()}>Download as Json</Button>
       </div>
     </S.MonthlyListAdd>
     <h1>Total: {moneyFormat(service.total)}</h1>

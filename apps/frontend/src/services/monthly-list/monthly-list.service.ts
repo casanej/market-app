@@ -151,6 +151,24 @@ export class MonthlyListService {
 
     this.saveList();
   }
+
+  /* DEBUG */
+  public downloadAsJson() {
+    if (!this.items.length) return;
+
+    const listData = {
+      total: this.total,
+      items: this.items,
+    };
+
+    const blob = new Blob([JSON.stringify(listData)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${this.LIST_NAME}.json`;
+    a.click();
+  }
+  /* ----- */
 }
 
 export type IMonthlyListService = MonthlyListService;
