@@ -23,10 +23,11 @@ export const ProductItemList: FC<ProductItemListProps> = ({ code, lastPrice, nam
     return <label className={`${textColor}`}>{message}</label>;
   }, [lastPrice, price]);
 
-  return <div className='p-3 border border-solid border-gray-400 rounded flex flex-row gap-4 space-x-2'>
+  return <div className='p-3 border border-solid border-gray-400 rounded flex flex-col gap-4'>
     <div className=' flex flex-col gap-2'>
-      <div className='flex flex-row gap-2 items-end' >
-        <h1 className='font-bold text-lg'>{name}</h1>
+      <div>
+        <h1 className='font-bold text-lg inline'>{name}</h1>
+        {'   '}
         <label className='text-sm'>{code}</label>
       </div>
       <div>
@@ -36,8 +37,8 @@ export const ProductItemList: FC<ProductItemListProps> = ({ code, lastPrice, nam
         {renderLastPrice}
       </div>
     </div >
-    <div>
-      <Button onClick={() => onRemove(code)}>Delete</Button>
+    <div className='flex flex-col gap-2'>
+      <Button fullWidth onClick={() => onRemove(code)}>Delete</Button>
     </div>
   </div>;
 };

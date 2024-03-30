@@ -42,9 +42,9 @@ export class MonthlyListService {
     try {
       z.object({
         code: z.string().min(13),
-        name: z.string().min(3),
+        name: z.string().min(1),
         price: z.number().min(0),
-        quantity: z.number().min(1),
+        quantity: z.number().min(0),
       }).parse({
         code: this.item.code.value,
         name: this.item.name.value,
@@ -100,6 +100,10 @@ export class MonthlyListService {
       if (this.item.quantity.value < 1) this.item.quantity.error = 'Quantidade inválida';
       else this.item.quantity.error = '';
     }
+  }
+
+  public sketchCountQuantity(value: number) {
+    this.item.quantity.value = this.item.quantity.value + value;
   }
 
   private addTotal(price: number, quantity: number) {

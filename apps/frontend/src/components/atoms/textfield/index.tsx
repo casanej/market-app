@@ -13,7 +13,7 @@ export const Textfield: FC<TextfieldProps> = ({ errorMessage, helperText, label,
       {label}
     </label>
     {
-      helperText && <div className="text-[11px] text-gray-400">{helperText}</div>
+      helperText && <div className="text-[11px] text-gray-400 text-start">{helperText}</div>
     }
     {
       errorMessage && <div className="text-[11px] text-red-500">{errorMessage}</div>

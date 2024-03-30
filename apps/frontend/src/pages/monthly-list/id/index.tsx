@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MonthlyListPageProps } from './index.type';
-import * as S from './index.style';
 import { monthlyListService } from '../../../services/monthly-list/monthly-list.service';
 import { moneyFormat } from '../../../utils';
 import { BarcodeReader } from '../../../components/organism';
@@ -34,39 +33,38 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
     return undefined;
   }, [isPendingProductName, isErrorProductName, service.item.code.value]);
 
-  return <S.MonthlyList className='container flex flex-col gap-8'>
-    <S.MonthlyListAdd>
-      <S.MonthlyListAddReader>
-        <Textfield
-          errorMessage={service.item.code.error}
-          inputMode='numeric'
-          label='Código de barras'
-          type='text'
-          value={service.item.code.value}
-          onChange={(e) => service.sketchItemEdit('code', e.target.value)}
-        />
-        <div>ou</div>
-        <BarcodeReader
-          onRead={(code) => service.sketchItemEdit('code', code)}
-        />
-      </S.MonthlyListAddReader>
-      <div className='flex flex-row gap-6 flex-1' >
-        <Textfield
-          errorMessage={service.item.name.error}
-          label='Nome do produto'
-          value={service.item.name.value}
-          helperText={handleHelperProductName}
-          onChange={(e) => service.sketchItemEdit('name', e.target.value)}
-        />
-        <Textfield
-          errorMessage={service.item.price.error}
-          label='Preço'
-          type='number'
-          value={service.item.price.value}
-          onBlur={() => service.sketchValidateField('price')}
-          onChange={(e) => service.sketchItemEdit('price', +e.target.value)}
-          min={0}
-        />
+  return <div className='container flex flex-col gap-6'>
+    <div className='flex flex-col gap-2 text-center'>
+      <BarcodeReader
+        onRead={(code) => service.sketchItemEdit('code', code)}
+      />
+      <div>ou</div>
+      <Textfield
+        errorMessage={service.item.code.error}
+        inputMode='numeric'
+        label='Código de barras'
+        type='text'
+        value={service.item.code.value}
+        onChange={(e) => service.sketchItemEdit('code', e.target.value)}
+      />
+      <Textfield
+        errorMessage={service.item.name.error}
+        label='Nome do produto'
+        value={service.item.name.value}
+        helperText={handleHelperProductName}
+        onChange={(e) => service.sketchItemEdit('name', e.target.value)}
+      />
+      <Textfield
+        errorMessage={service.item.price.error}
+        label='Preço'
+        type='number'
+        value={service.item.price.value}
+        onBlur={() => service.sketchValidateField('price')}
+        onChange={(e) => service.sketchItemEdit('price', +e.target.value)}
+        min={0}
+      />
+      <div className='flex flex-row gap-2'>
+        <Button fullWidth onClick={() => service.sketchCountQuantity(-1)}>-</Button>
         <Textfield
           errorMessage={service.item.quantity.error}
           label='Quantidade'
@@ -75,13 +73,14 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
           onChange={(e) => service.sketchItemEdit('quantity', +e.target.value)}
           min={1}
         />
+        <Button fullWidth onClick={() => service.sketchCountQuantity(+1)}>+</Button>
       </div>
-      <div className='flex flex-row gap-2'>
+      <div className='flex flex-col gap-2'>
         <Button fullWidth onClick={() => service.sketchItemAdd()}>Adicionar</Button>
-        <Button onClick={() => service.sketchItemReset()}>Limpar</Button>
-        <Button onClick={() => service.downloadAsJson()}>Download as Json</Button>
+        <Button fullWidth onClick={() => service.sketchItemReset()}>Limpar</Button>
+        <Button fullWidth onClick={() => service.downloadAsJson()}>Download as Json</Button>
       </div>
-    </S.MonthlyListAdd>
+    </div>
     <h1>Total: {moneyFormat(service.total)}</h1>
     <div className='flex flex-col gap-4'>
       {service.items.map(item => (<ProductItemList
@@ -94,7 +93,7 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
         onRemove={(code) => service.removeItem(code)}
       />))}
     </div>
-  </S.MonthlyList>;
+  </div>;
 });
 
 export const MonthlyListIdPage = () => {

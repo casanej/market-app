@@ -51,7 +51,7 @@ export const BarcodeReader: FC<BarcodeReaderProps> = ({ onRead }) => {
         </div>
       }
       <div>
-        <Button onClick={handleToggleReader}>{renderButtonLabel}</Button>
+        <Button fullWidth onClick={handleToggleReader}>{renderButtonLabel}</Button>
       </div>
     </div>
   </div>
