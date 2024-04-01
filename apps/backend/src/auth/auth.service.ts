@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthLoginDto } from './dto/auth-login.dto';
@@ -16,7 +16,7 @@ export class AuthService {
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) throw new ForbiddenException('Invalid email or password');
+    if (!isMatch) throw new UnauthorizedException('Invalid email or password');
 
     const payload = {
       sub: user._id,

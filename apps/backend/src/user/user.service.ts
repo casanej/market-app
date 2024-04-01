@@ -11,7 +11,7 @@ export class UserService {
 
   async handleCreateUser(user: CreateUserDto) {
     if (await this.userRepository.checkUserExists(user.email)) {
-      throw new ForbiddenException('User already exists');
+      throw new ForbiddenException('Email already taken', 'US-001');
     }
 
     const saltOrRounds = 10;
@@ -28,7 +28,7 @@ export class UserService {
   async handleGetUserByEmail(email: string) {
     const user = await this.userRepository.filterUser({ email });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('User not found', 'US-002');
 
     return user;
   }
