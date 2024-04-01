@@ -6,15 +6,14 @@ import { MonthlyListPageProps } from './index.type';
 import { monthlyListService } from '../../../services/monthly-list/monthly-list.service';
 import { moneyFormat } from '../../../utils';
 import { BarcodeReader } from '../../../components/organism';
-import { openFoodFactsApiService } from '../../../services';
 import { Button, ProductItemList, Textfield } from '../../../components/atoms';
-
+import { marketAppBackend } from '../../../services';
 
 const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
   const { mutate: mutationProductCodeBar, isPending: isPendingProductName, isError: isErrorProductName } = useMutation({
-    mutationFn: (barcode: string) => openFoodFactsApiService.getProduct(barcode),
+    mutationFn: (barcode: string) => marketAppBackend.getProduct(barcode),
     onSuccess: (data) => {
-      service.sketchItemEdit('name', `${data.product.brands} - ${data.product.product_name}`);
+      service.sketchItemEdit('name', data.showName);
     },
   });
 
@@ -78,7 +77,6 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
       <div className='flex flex-col gap-2'>
         <Button fullWidth onClick={() => service.sketchItemAdd()}>Adicionar</Button>
         <Button fullWidth onClick={() => service.sketchItemReset()}>Limpar</Button>
-        <Button fullWidth onClick={() => service.downloadAsJson()}>Download as Json</Button>
       </div>
     </div>
     <h1>Total: {moneyFormat(service.total)}</h1>
