@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { JwtUserData } from 'market-app-bff-models';
 import { IS_PUBLIC_KEY } from 'src/common/decorator/public-route.decorator';
 
 @Injectable()
@@ -32,17 +33,18 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
+      const payload = await this.jwtService.verifyAsync<JwtUserData>(
         token,
         {
           secret: process.env.JWT_SECRET
         }
       );
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+
+      if (payload.exp < Date.now()) throw new UnauthorizedException('Invalid token', 'AG-002')
+
       request['user'] = payload;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid token', 'AG-001');
     }
     return true;
   }
@@ -50,5 +52,11 @@ export class AuthGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+}
+
+declare global {
+  interface Request {
+    user: JwtUserData;
   }
 }

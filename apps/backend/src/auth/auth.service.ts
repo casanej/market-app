@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { UserService } from 'src/user/user.service';
+import { JwtUserData } from 'market-app-bff-models';
+import { JWT_EXPIRATION_TIME } from 'src/common/constants/auth.constant';
 
 @Injectable()
 export class AuthService {
@@ -18,14 +20,17 @@ export class AuthService {
 
     if (!isMatch) throw new UnauthorizedException('Invalid email or password');
 
-    const payload = {
-      sub: user._id,
+    const payload: Omit<JwtUserData, 'exp'> = {
+      sub: user._id as unknown as string,
       name: user.name,
-      iat: Date.now()
+      iat: Date.now(),
     }
 
     return {
-      accessToken: await this.jwtService.signAsync(payload)
+      accessToken: await this.jwtService.signAsync(payload, {
+        expiresIn: JWT_EXPIRATION_TIME,
+        secret: process.env.JWT_SECRET,
+      })
     };
   }
 }

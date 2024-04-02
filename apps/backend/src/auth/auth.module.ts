@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { JWT_EXPIRATION_TIME } from 'src/common/constants/auth.constant';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { AuthGuard } from './guards/auth.guard';
       inject: [ConfigService],
       useFactory: (configService) => ({
         secret: configService.get('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: JWT_EXPIRATION_TIME },
       }),
     }),
     UserModule,

@@ -3,19 +3,16 @@ import { HydratedDocument } from "mongoose";
 
 @Schema({ collection: 'users' })
 export class UsersModel {
-  @Prop()
-  id: string;
-
-  @Prop()
+  @Prop({ instance: String })
   name: string;
 
-  @Prop()
+  @Prop({ instance: String })
   email: string;
 
-  @Prop()
+  @Prop({ instance: String })
   password: string;
 
-  @Prop()
+  @Prop({ instance: Number })
   lastLogin: number;
 }
 

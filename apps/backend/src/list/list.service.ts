@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateListDto } from './dto/create-list.dto';
-import { UpdateListDto } from './dto/update-list.dto';
 import { ListRepository } from './repositories/list.repository';
+import { CreateListDto, JwtUserData } from 'market-app-bff-models';
 
 @Injectable()
 export class ListService {
@@ -9,23 +8,11 @@ export class ListService {
     private readonly listRepository: ListRepository
   ) { }
 
-  create(createListDto: CreateListDto) {
-    return this.listRepository.create(createListDto);
+  handleCreateList(createListDto: CreateListDto, user: JwtUserData) {
+    return this.listRepository.createList(user.sub, createListDto);
   }
 
-  findAll() {
-    return this.listRepository.findAll();
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} list`;
-  }
-
-  update(id: number, updateListDto: UpdateListDto) {
-    return `This action updates a #${id} list`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} list`;
+  handleGetLists(owner: string) {
+    return this.listRepository.getLists(owner);
   }
 }
