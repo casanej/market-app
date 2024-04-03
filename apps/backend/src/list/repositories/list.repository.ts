@@ -3,6 +3,7 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { InjectModel } from '@nestjs/mongoose';
 import { ListModel } from '../entities/list.schema';
 import { CreateListDto } from 'market-app-bff-models';
+import { WithId } from 'src/common/models/mongo';
 
 @Injectable()
 export class ListRepository {
@@ -29,7 +30,7 @@ export class ListRepository {
     }
   }
 
-  async getLists(owner: string): Promise<ListModel[]> {
+  async getLists(owner: string): Promise<WithId<ListModel>[]> {
     return this.listModel.find({
       owner
     });

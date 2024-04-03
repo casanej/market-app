@@ -6,6 +6,6 @@ interface HomePageProps { }
 export const HomePage: FC<HomePageProps> = () => {
 
   return <S.HomePage>
-    <a href='/monthly-list/teste'>Monthly List</a>
+    <a href='/monthly-list'>Monthly List</a>
   </S.HomePage>;
 };

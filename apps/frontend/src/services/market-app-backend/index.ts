@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, Method } from "axios";
-import { MAPProductResponseDto } from "market-app-bff-models";
+import { GetListsDto, MAPProductResponseDto } from "market-app-bff-models";
 
 class MarketAppBackend {
   private instance: AxiosInstance = axios.create({
@@ -14,6 +14,16 @@ class MarketAppBackend {
       params: method === 'GET' ? payload : undefined,
       data: method === 'POST' ? payload : undefined,
     })
+  }
+
+  setToken(token: string) {
+    this.instance.defaults.headers.common.Authorization = token;
+  }
+
+  async getLists() {
+    const { data } = await this.makeCall<null, GetListsDto[]>('GET', 'list');
+
+    return data;
   }
 
   async getProduct(barcode: string) {

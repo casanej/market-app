@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ListRepository } from './repositories/list.repository';
-import { CreateListDto, JwtUserData } from 'market-app-bff-models';
+import { CreateListDto, GetListsDto, JwtUserData } from 'market-app-bff-models';
+import { GetListsResponseDto } from './dto/get-lists-response.dto';
 
 @Injectable()
 export class ListService {
@@ -8,11 +9,13 @@ export class ListService {
     private readonly listRepository: ListRepository
   ) { }
 
-  handleCreateList(createListDto: CreateListDto, user: JwtUserData) {
-    return this.listRepository.createList(user.sub, createListDto);
+  async handleCreateList(createListDto: CreateListDto, user: JwtUserData) {
+    return await this.listRepository.createList(user.sub, createListDto);
   }
 
-  handleGetLists(owner: string) {
-    return this.listRepository.getLists(owner);
+  async handleGetLists(owner: string): Promise<GetListsDto[]> {
+    const lists = await this.listRepository.getLists(owner);
+
+    return lists.map(list => (new GetListsResponseDto(list)));
   }
 }
