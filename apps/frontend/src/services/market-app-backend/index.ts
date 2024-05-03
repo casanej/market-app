@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, Method } from "axios";
-import { GetListsDto, MAPProductResponseDto } from "market-app-bff-models";
+import { AuthLoginRequest, AuthLoginResponse, GetListsDto, MAPProductResponseDto } from "market-app-bff-models";
+import { LC_NAMES } from "../../constants/local-storage";
 
 class MarketAppBackend {
   private instance: AxiosInstance = axios.create({
@@ -18,6 +19,23 @@ class MarketAppBackend {
 
   setToken(token: string) {
     this.instance.defaults.headers.common.Authorization = token;
+  }
+
+  async doLogin(email: string, password: string): Promise<true | string> {
+    try {
+      const { data } = await this.makeCall<AuthLoginRequest, AuthLoginResponse>('POST', 'auth/login', { email, password });
+
+      const token = `Bearer ${data.accessToken}`;
+
+      this.setToken(token);
+      localStorage.setItem(LC_NAMES.AUTH_TOKEN, token);
+
+      return true;
+    } catch (error) {
+      console.error('[LOGIN ERROR]', error);
+
+      throw Error('Cannot login with provided credentials.');
+    }
   }
 
   async getLists() {
