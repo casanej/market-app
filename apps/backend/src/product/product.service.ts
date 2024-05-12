@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { OpenFoodFactsService } from 'src/vendors/open-food-facts.service';
-import { MAPProductResponseDto, OpenFoodProduct } from 'market-app-bff-models';
+import { JwtUserData, MAPProductResponseDto, OpenFoodProduct, ResponsePaginatedListsDto } from 'market-app-bff-models';
 import { GetProductResponseDto } from './dto/get-product-response.dto';
-import { ProductsModel } from './entities/product.entity';
+import { ProductsModel, ProductsModelHelper } from './entities/product.entity';
 import { promiseSettledHelper } from 'src/common/utils/promise';
+import { CreateProductDto } from './dto/create-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -26,21 +27,45 @@ export class ProductService {
     if (!product && openFoodProduct.status === 0) throw new NotFoundException('Product not found.', 'PS-001');
 
     if (openFoodProduct.status === 1) {
-      response.brand = openFoodProduct.product.brands;
-      response.code = openFoodProduct.code;
-      response.name = openFoodProduct.product.product_name;
-      response.showName = `${openFoodProduct.product.brands} - ${openFoodProduct.product.product_name} - ${openFoodProduct.product.quantity}`;
+      response.setData({
+        brand: openFoodProduct.product.brands,
+        code: openFoodProduct.code,
+        name: openFoodProduct.product.product_name,
+        showName: `${openFoodProduct.product.brands} - ${openFoodProduct.product.product_name} - ${openFoodProduct.product.quantity}`,
+      });
     }
 
     if (product) {
-      response.brand = product.brand;
-      response.code = product.code;
-      response.content = product.content;
-      response.image = product.image;
-      response.name = product.name;
-      response.showName = product.showName;
+      response.setData(product);
     }
 
     return response;
+  }
+
+  async list(page: number, pageSize: number): Promise<ResponsePaginatedListsDto<MAPProductResponseDto>> {
+    const { totalItems, products } = await this.productsRepository.listProducts(page, pageSize);
+
+    return {
+      items: products.map(product => new GetProductResponseDto(product)),
+      currentPage: page,
+      totalItems,
+      totalPages: Math.ceil(totalItems / pageSize),
+    };
+  }
+
+  async register(user: JwtUserData, product: CreateProductDto): Promise<MAPProductResponseDto> {
+
+    try {
+      const newProduct = new ProductsModelHelper({
+        ...product,
+        registeredBy: user.sub,
+      });
+      const registeredProduct = await this.productsRepository.createProduct(newProduct);
+
+      return new GetProductResponseDto(registeredProduct);
+    } catch (error) {
+      console.error('[ERROR TO REGISTER PRODUCT]', error);
+      throw new InternalServerErrorException('Error to register product.', 'PS-002')
+    }
   }
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, Method } from "axios";
-import { AuthLoginRequest, AuthLoginResponse, GetListsDto, MAPProductResponseDto } from "market-app-bff-models";
+import { AuthLoginRequest, AuthLoginResponse, MAPProductResponseDto, RequestPaginatedListsDto, ResponsePaginatedListsDto } from "market-app-bff-models";
 import { LC_NAMES } from "../../constants/local-storage";
 
 class MarketAppBackend {
@@ -38,8 +38,8 @@ class MarketAppBackend {
     }
   }
 
-  async getLists() {
-    const { data } = await this.makeCall<null, GetListsDto[]>('GET', 'list');
+  async getLists(page: number, pageSize: number) {
+    const { data } = await this.makeCall<RequestPaginatedListsDto, ResponsePaginatedListsDto<MAPProductResponseDto>>('GET', 'product', { page, pageSize });
 
     return data;
   }

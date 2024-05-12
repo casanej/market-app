@@ -1,6 +1,7 @@
 export interface JwtUserData {
   sub: string;
   name: string;
+  role: number;
   iat: number;
   exp: number;
 }

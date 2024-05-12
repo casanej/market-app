@@ -18,4 +18,21 @@ export class ProductRepository {
 
     return query.toObject();
   }
+
+  async createProduct(product: ProductsModel) {
+    const newProduct = new this.productsModel(product);
+
+    return await newProduct.save();
+  }
+
+  async listProducts(page: number, pageSize: number) {
+    // get paginated products and total items
+    const products = await this.productsModel.find().skip(page * pageSize).limit(pageSize).exec();
+    const totalItems = await this.productsModel.countDocuments();
+
+    return {
+      products,
+      totalItems,
+    }
+  }
 }

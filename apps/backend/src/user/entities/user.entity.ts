@@ -12,6 +12,9 @@ export class UsersModel {
   @Prop({ instance: String })
   password: string;
 
+  @Prop({ instance: Number, default: 0 })
+  permissionBit: number;
+
   @Prop({ instance: Number })
   lastLogin: number;
 }

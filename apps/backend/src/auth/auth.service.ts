@@ -23,6 +23,7 @@ export class AuthService {
     const payload: Omit<JwtUserData, 'exp'> = {
       sub: user._id as unknown as string,
       name: user.name,
+      role: user.permissionBit,
       iat: Date.now(),
     }
 
