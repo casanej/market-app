@@ -20,11 +20,7 @@ export const LoginPage = () => {
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormFields>({ resolver: schemaResolverFormLogin });
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormFields>({ resolver: schemaResolverFormLogin });
 
   const onSubmit: SubmitHandler<LoginFormFields> = (data) => {
     const { email, currentPassword } = data;

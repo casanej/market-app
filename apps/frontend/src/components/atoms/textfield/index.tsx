@@ -7,9 +7,7 @@ export const Textfield: FC<TextfieldProps> = ({ errorMessage, helperText, label,
     if (!register) return null;
 
     return {
-      ...register(name, {
-        required
-      })
+      ...register(name, { required })
     }
   }, [name, register])
 

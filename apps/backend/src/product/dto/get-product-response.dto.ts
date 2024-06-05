@@ -3,7 +3,8 @@ import { MAPProductResponseDto } from "market-app-bff-models";
 export class GetProductResponseDto implements MAPProductResponseDto {
   brand: string;
   code: string;
-  quantity: number;
+  content: number;
+  contentType: string;
   image?: string;
   name: string;
   showName: string;
@@ -16,7 +17,8 @@ export class GetProductResponseDto implements MAPProductResponseDto {
     if (partial) {
       this.brand = partial.brand;
       this.code = partial.code;
-      this.quantity = partial.quantity;
+      this.content = partial.content;
+      this.contentType = partial.contentType;
       this.image = partial.image;
       this.name = partial.name;
       this.showName = partial.showName;

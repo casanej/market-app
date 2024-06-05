@@ -4,18 +4,18 @@ type HTMLInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'classNa
 
 export type TextfieldProps = TextfieldPropsRaw | TextfieldPropsForm;
 
-interface TextFieldsPropsBase {
+interface TextFieldsPropsBase extends HTMLInputProps {
   errorMessage?: string;
   helperText?: string;
   label?: string;
+  name?: string;
 }
 
-interface TextfieldPropsRaw extends TextFieldsPropsBase, HTMLInputProps {
-  name?: string;
+interface TextfieldPropsRaw extends TextFieldsPropsBase {
   register: undefined;
 }
 
-interface TextfieldPropsForm extends TextFieldsPropsBase, HTMLInputProps {
+interface TextfieldPropsForm extends TextFieldsPropsBase {
   name: string;
   register: UseFormRegister<any>;
   label?: string;

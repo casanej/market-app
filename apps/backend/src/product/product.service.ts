@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { OpenFoodFactsService } from 'src/vendors/open-food-facts.service';
 import { JwtUserData, MAPProductResponseDto, OpenFoodProduct, ResponsePaginatedListsDto } from 'market-app-bff-models';
@@ -43,6 +43,9 @@ export class ProductService {
   }
 
   async list(page: number, pageSize: number): Promise<ResponsePaginatedListsDto<MAPProductResponseDto>> {
+    if (page < 0) throw new BadRequestException('Page number must be greater than 1.', 'PC-001');
+    if (pageSize < 1) throw new BadRequestException('Page size must be greater than 0.', 'PC-002');
+
     const { totalItems, products } = await this.productsRepository.listProducts(page, pageSize);
 
     return {

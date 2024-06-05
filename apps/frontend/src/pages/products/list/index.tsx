@@ -5,10 +5,16 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ProductListFilterParams } from "./index.type";
 import { marketAppBackend } from "../../../services";
+import { Pagination } from "../../../components/molecules";
 
 export const ProductListPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [productList, setProductList] = useState<ResponsePaginatedListsDto<MAPProductResponseDto>>();
+
+  console.log('[TESTE]', searchParams.get('page'))
+
+  const page = +(searchParams.get('page') ?? '1');
+  const pageSize = +(searchParams.get('pageSize') ?? '10');
 
   const { mutate: mutationGetProductList, isPending: isPendingProductList } = useMutation({
     mutationFn: ({ page, pageSize }: ProductListFilterParams) => marketAppBackend.getLists(page, pageSize),
@@ -21,10 +27,9 @@ export const ProductListPage = () => {
   });
 
   useEffect(() => {
-    const page = parseInt(searchParams.get('page') ?? '1');
-    const pageSize = parseInt(searchParams.get('page') ?? '10');
+    console.log('page', page, pageSize);
     mutationGetProductList({ page, pageSize });
-  }, []);
+  }, [page, pageSize]);
 
   if (isPendingProductList) return <div>Loading...</div>;
 
@@ -36,9 +41,14 @@ export const ProductListPage = () => {
       productList?.items.map((product) => {
         return <div key={product.code} className="border border-gray-500 border-solid p-2">
           <div>[{product.code}] {product.showName}</div>
-          <div>{product.quantity}</div>
+          <div>{product.content}</div>
         </div>;
       })
     }
+    <Pagination
+      current={page}
+      onPageChange={(page) => setSearchParams({ page: `${page}` })}
+      maxPages={productList?.totalPages ?? 0}
+    />
   </div>;
 };

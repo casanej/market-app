@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, Method } from "axios";
-import { AuthLoginRequest, AuthLoginResponse, MAPProductResponseDto, RequestPaginatedListsDto, ResponsePaginatedListsDto } from "market-app-bff-models";
+import { AuthLoginRequest, AuthLoginResponse, MAPProductRequestDto, MAPProductResponseDto, RequestPaginatedListsDto, ResponsePaginatedListsDto } from "market-app-bff-models";
 import { LC_NAMES } from "../../constants/local-storage";
 
 class MarketAppBackend {
@@ -36,6 +36,12 @@ class MarketAppBackend {
 
       throw Error('Cannot login with provided credentials.');
     }
+  }
+
+  async doRegisterProduct(payload: MAPProductRequestDto) {
+    const { data } = await this.makeCall('POST', 'product', payload);
+
+    return data;
   }
 
   async getLists(page: number, pageSize: number) {
