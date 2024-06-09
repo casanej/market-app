@@ -9,9 +9,9 @@ WORKDIR app/backend
 COPY ./apps/backend .
 
 RUN npm install -g @nestjs/cli
-RUN yarn install
-RUN yarn build
+RUN npm install
+RUN npm run build
 
 EXPOSE 3000
 
-CMD ["yarn", "start:prod"]
+CMD ["npm", "run", "start:prod"]

@@ -6,8 +6,8 @@ WORKDIR apps/backend
 COPY apps/backend .
 
 RUN npm install -g yarn
-RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN npm install --frozen-lockfile
+RUN npm run build
 
 EXPOSE 3000
 
