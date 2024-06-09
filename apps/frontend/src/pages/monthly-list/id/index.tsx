@@ -21,7 +21,6 @@ const MonthlyListPageWrapped = observer(({ service }: MonthlyListPageProps) => {
     if (service.item.code.value && service.item.code.value.length === 13) {
       mutationProductCodeBar(service.item.code.value);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service.item.code.value]);
 
   const handleHelperProductName = useMemo(() => {

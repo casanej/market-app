@@ -41,7 +41,6 @@ const exceptionTreatmentAxios = (error: AxiosError & CustomMessage) => {
       return customError[0];
     }
 
-    // eslint-disable-next-line no-extra-parens
     const serverError = (error.response?.data as any).message;
 
     if (serverError) {
