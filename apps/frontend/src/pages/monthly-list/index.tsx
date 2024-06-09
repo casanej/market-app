@@ -1,18 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { GetListProps } from './id/index.type';
 import { marketAppBackend } from '../../services';
 
 export const MonthlyListPage = () => {
-  const { mutate: mutationGetLists, isPending: isPendingGettingList, isError: isErrorGettingList, data: getListsData } = useMutation({
-    mutationFn: () => marketAppBackend.getLists(),
+  const [page, pageSize]: [number, number] = [1, 10];
+  const { mutate: mutationGetLists, isPending: isPendingGettingList, isError: isErrorGettingList, data: listData } = useMutation({
+    mutationFn: ({ page, pageSize }: GetListProps) => marketAppBackend.getLists(page, pageSize),
     onError: (error) => {
       console.error('[GET LISTS ERROR]', error)
     },
   });
 
   useEffect(() => {
-    mutationGetLists();
+    mutationGetLists({ page, pageSize });
   }, []);
 
   if (isPendingGettingList) {
@@ -24,9 +26,9 @@ export const MonthlyListPage = () => {
   }
 
   return <div>
-    {getListsData?.map((list) => (
-      <div key={list.id}>
-        <Link to={`/monthly-list/${list.id}`}>{list.name}</Link>
+    {listData?.items?.map((list) => (
+      <div key={list.code}>
+        <Link to={`/monthly-list/${list.code}`}>{list.name}</Link>
       </div>
     ))}
   </div>;
